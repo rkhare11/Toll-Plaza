@@ -1,0 +1,4 @@
+# dependencies
+/service/node_modules/
+/client/node_modules/
+/service/dist/

@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  db:
+    image: mongo:4.4.0-rc12
+    ports:
+     - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=mongo
+  service:
+    image: service
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: build-tools/build-service/Dockerfile
+    environment:
+      - DB_USER=mongo
+      - DB_PASS=mongo
+    depends_on:
+      - db
+    volumes:
+     - ./service/dist:/app/dist
+    ports:
+      - 5000:5000
+  service-watch:
+    image: service
+    depends_on:
+      - db
+    volumes:
+     - ./service/dist:/app/dist
+     - ./service/src:/app/src
+    command: npm run compileWatch
+  client:
+    image: client
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: build-tools/build-client/Dockerfile
+    depends_on:
+      - service
+    ports:
+      - 3000:3000

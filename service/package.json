@@ -1,0 +1,32 @@
+{
+  "name": "service",
+  "version": "1.0.0",
+  "description": "Service",
+  "main": "dist/server.js",
+  "scripts": {
+    "setup": "npm install --save-exact",
+    "compile": "tsc",
+    "compileWatch": "tsc --watch",
+    "lint": "tslint --project tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rajat Khare",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.6"
+  },
+  "dependencies": {
+    "@types/body-parser": "^1.19.0",
+    "@types/cors": "^2.8.6",
+    "@types/express": "^4.17.7",
+    "@types/mongoose": "^5.7.31",
+    "@types/query-string": "^6.3.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.23",
+    "query-string": "^6.13.1"
+  }
+}
