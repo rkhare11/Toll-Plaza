@@ -9,5 +9,5 @@ In the project directory, you can run:
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view client in the browser.
-Open [http://localhost:5000](http://localhost:5000) to access service.
+Use [http://localhost:5000](http://localhost:5000) to access service.
 Add "service-watch" to the build command to compile and start service in watch mode.
