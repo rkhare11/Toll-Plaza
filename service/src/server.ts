@@ -80,7 +80,6 @@ server.listen(PORT, () => {
 
 // processApiRequest links the service defs to their implementations and sends a response accordingly
 async function processApiRequest(req: express.Request, res: express.Response, callDef: CallDef, impl: Impl, methodName: string): Promise<void> {
-    res.setHeader("Access-Control-Allow-Origin", "*");
     const query = parse(req.originalUrl.slice(req.originalUrl.indexOf("?")));
     const options: any = { ...req.params };
     (callDef.queryParams || []).map((param) => {
