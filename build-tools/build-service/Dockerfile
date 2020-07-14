@@ -2,7 +2,7 @@ FROM node:12.18.1-alpine
 
 WORKDIR /app
 
-COPY service/package.json service/tsconfig.json service/tslint.json /app/
+COPY service/package.json service/tsconfig.json service/tslint.json service/jest.config.js /app/
 
 RUN cd /app &&\
     npm run setup

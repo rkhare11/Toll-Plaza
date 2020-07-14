@@ -1,12 +1,11 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import * as http from "http";
 import * as cors from "cors";
 import * as mongoose from "mongoose";
 import { CallDef, ServiceDef, tollServiceDef, tollServiceImpl } from "./services";
 import { parse } from "query-string";
 
-enum StatusErrors {
+export enum StatusErrors {
     ERR_400 = "ERR_BAD_REQUEST",
     ERR_ITEM_404 = "ERR_ITEM_NOT_FOUND",
     ERR_ROUTE_404 = "ERR_ROUTE_NOT_FOUND",
@@ -21,7 +20,6 @@ const app: express.Application = express();
 
 const jsonParser = bodyParser.json();
 
-const server = new http.Server(app);
 const PORT = 5000;
 
 let connnectedToDb = false;
@@ -73,11 +71,6 @@ app.get("/healthy", (req, res) => {
     }
 });
 
-server.listen(PORT, () => {
-    // tslint:disable-next-line: no-console
-    console.log(`Server started on port: ${PORT}`);
-});
-
 // processApiRequest links the service defs to their implementations and sends a response accordingly
 async function processApiRequest(req: express.Request, res: express.Response, callDef: CallDef, impl: Impl, methodName: string): Promise<void> {
     const query = parse(req.originalUrl.slice(req.originalUrl.indexOf("?")));
@@ -98,6 +91,7 @@ async function processApiRequest(req: express.Request, res: express.Response, ca
     const result = impl[methodName](options);
     const response = await result;
     if (!response) {
+        res.setHeader("Content-Type", "application/json");
         res.status(404);
         res.end(JSON.stringify({
             error: {
@@ -119,6 +113,7 @@ function registerService<S = Impl>(impl: S, def: ServiceDef<S>): void {
       const httpMethod: string = callDef.method.toLowerCase();
       (app as any)[httpMethod]("/api/v1" + callDef.path, (req: express.Request, res: express.Response) => {
         if (req.params.id && !mongoose.Types.ObjectId.isValid(req.params.id)) {
+            res.setHeader("Content-Type", "application/json");
             res.status(400);
             res.end(JSON.stringify({
                 error: {
@@ -148,6 +143,7 @@ registerService(tollServiceImpl, tollServiceDef);
 // Default route for catching all unknown routes and sending an "Route not found" error.
 app.get("/*", (req, res) => {
     res.status(404);
+    res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify({
         error: {
             name: StatusErrors.ERR_ROUTE_404,
@@ -156,3 +152,13 @@ app.get("/*", (req, res) => {
         },
     }));
 });
+
+const exportedServer = app.listen(PORT, () => {
+    // tslint:disable-next-line: no-console
+    console.log(`Server started on port: ${PORT}`);
+});
+
+module.exports = {
+    app: exportedServer,
+    StatusErrors,
+};

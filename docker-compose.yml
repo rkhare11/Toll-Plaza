@@ -28,8 +28,8 @@ services:
     depends_on:
       - db
     volumes:
-     - ./service/dist:/app/dist
-     - ./service/src:/app/src
+      - ./service/dist:/app/dist
+      - ./service/src:/app/src
     command: npm run compileWatch
   client:
     image: client
@@ -41,3 +41,14 @@ services:
       - service
     ports:
       - 3000:3000
+  test-service:
+    image: service
+    depends_on:
+      - service
+    environment:
+      - DB_USER=mongo
+      - DB_PASS=mongo
+    volumes:
+      - ./service/dist:/app/dist
+      - ./service/src:/app/src
+    command: npm run test
